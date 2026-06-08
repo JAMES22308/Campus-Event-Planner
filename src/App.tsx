@@ -1,0 +1,320 @@
+// import { useEffect, useState } from "react";
+// import { EventPlanner } from "./model/EventPlanner";
+// import { IndexedDBEventRepository } from "./repository/IndexedDBEventRepository";
+
+// import EventForm from "./components/EventForm";
+// import EventList from "./components/EventList";
+
+// import "./App.css";
+
+// const planner = new EventPlanner(new IndexedDBEventRepository());
+
+// export default function App() {
+//   const [events, setEvents] = useState<any[]>([]);
+//   const [showForm, setShowForm] = useState(false);
+//   const [editingEvent, setEditingEvent] = useState<any | null>(null);
+
+//   const [search, setSearch] = useState("");
+//   const [sortBy, setSortBy] = useState("date");
+
+//   const [loading, setLoading] = useState(true);
+
+//   // LOAD FROM DB (IMPORTANT)
+//   async function refresh() {
+//     setLoading(true);
+
+//     const data = await planner.loadAllFromRepository();
+//     setEvents([...data]);
+
+//     setLoading(false);
+//   }
+
+//   useEffect(() => {
+//     refresh();
+//   }, []);
+
+//   // SAVE (ADD / UPDATE)
+//   async function handleSave(data: any) {
+//     if (editingEvent) {
+//       await planner.updateEvent(editingEvent.id, data);
+//       setEditingEvent(null);
+//     } else {
+//       await planner.addEvent(data);
+//     }
+
+//     setShowForm(false);
+//     await refresh();
+//   }
+
+//   // DELETE
+//   async function handleDelete(id: number) {
+//     await planner.removeEvent(id);
+//     await refresh();
+//   }
+
+//   // EDIT
+//   function handleEdit(event: any) {
+//     setEditingEvent(event);
+//     setShowForm(true);
+//   }
+
+//   // FILTER + SORT
+//   const filteredEvents = events
+//     .filter((e) => {
+//       const term = search.toLowerCase();
+//       return (
+//         e.name.toLowerCase().includes(term) ||
+//         e.location.toLowerCase().includes(term)
+//       );
+//     })
+//     .sort((a, b) => {
+//       if (sortBy === "date") {
+//         return new Date(a.date).getTime() - new Date(b.date).getTime();
+//       }
+
+//       if (sortBy === "name") {
+//         return a.name.localeCompare(b.name);
+//       }
+
+//       if (sortBy === "participants") {
+//         return a.participants - b.participants;
+//       }
+
+//       return 0;
+//     });
+
+//   return (
+//     <div className="dashboard">
+
+//       <div className="header">
+//         <h1>📅 Event Dashboard</h1>
+
+//         <button onClick={() => setShowForm(true)}>
+//           + Add Event
+//         </button>
+//       </div>
+
+//       <div className="controls">
+//         <input
+//           placeholder="Search..."
+//           value={search}
+//           onChange={(e) => setSearch(e.target.value)}
+//         />
+
+//         <select
+//           value={sortBy}
+//           onChange={(e) => setSortBy(e.target.value)}
+//         >
+//           <option value="date">Sort by Date</option>
+//           <option value="name">Sort by Name</option>
+//           <option value="participants">Sort by Participants</option>
+//         </select>
+//       </div>
+
+//       {loading ? (
+//         <p>Loading events...</p>
+//       ) : (
+//         <EventList
+//           events={filteredEvents}
+//           onEdit={handleEdit}
+//           onDelete={handleDelete}
+//         />
+//       )}
+
+//       {showForm && (
+//         <div className="modal-overlay">
+//           <div className="modal">
+//             <EventForm
+//               onAdd={handleSave}
+//               onCancel={() => {
+//                 setShowForm(false);
+//                 setEditingEvent(null);
+//               }}
+//               initialData={editingEvent}
+//             />
+//           </div>
+//         </div>
+//       )}
+
+//     </div>
+//   );
+// }
+
+
+import { useEffect, useState } from "react";
+import { EventPlanner } from "./model/EventPlanner";
+import { IndexedDBEventRepository } from "./repository/IndexedDBEventRepository";
+
+import EventForm from "./components/EventForm";
+import EventList from "./components/EventList";
+
+import "./App.css";
+
+type Event = {
+  id: number;
+  name: string;
+  date: string;
+  location: string;
+  participants: number;
+};
+
+const planner = new EventPlanner(new IndexedDBEventRepository());
+
+export default function App() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("date");
+
+  const [error, setError] = useState<string | null>(null);
+
+  // LOAD
+  async function refresh() {
+    const data = await planner.loadAllFromRepository();
+    setEvents([...data]);
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  // ADD / UPDATE (WITH VALIDATION = TASK 1 REQUIREMENT)
+  async function handleSave(data: any) {
+    try {
+      setError(null);
+
+      if (!data.name || data.name.trim() === "") {
+        throw new Error("Event name is required");
+      }
+
+      if (data.participants < 0) {
+        throw new Error("Participants cannot be negative");
+      }
+
+      if (editingEvent) {
+        await planner.updateEvent(editingEvent.id, data);
+        setEditingEvent(null);
+      } else {
+        await planner.addEvent(data);
+      }
+
+      setShowForm(false);
+      await refresh();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  }
+
+  // DELETE
+  async function handleDelete(id: number) {
+    await planner.removeEvent(id);
+    await refresh();
+  }
+
+  // EDIT
+  function handleEdit(event: Event) {
+    setEditingEvent(event);
+    setShowForm(true);
+  }
+
+  // CALCULATIONS (TASK 1 REQUIREMENT)
+  const totalParticipants = events.reduce(
+    (sum, e) => sum + e.participants,
+    0
+  );
+
+  const averageParticipants =
+    events.length > 0 ? totalParticipants / events.length : 0;
+
+  // FILTER + SORT
+  const filteredEvents = events
+    .filter((e) => {
+      const term = search.toLowerCase();
+      return (
+        e.name.toLowerCase().includes(term) ||
+        e.location.toLowerCase().includes(term)
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+      if (sortBy === "name") {
+        return a.name.localeCompare(b.name);
+      }
+      if (sortBy === "participants") {
+        return a.participants - b.participants;
+      }
+      return 0;
+    });
+
+  return (
+    <div className="dashboard">
+
+      <div className="header">
+        <h1>📅 Event Dashboard</h1>
+
+        <button onClick={() => setShowForm(true)}>
+          + Add Event
+        </button>
+      </div>
+
+      {/* ERROR (FAILURE CASE UI) */}
+      {error && (
+        <div className="error-banner">
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* CALCULATIONS DISPLAY (IMPORTANT FOR MARKS) */}
+      <div className="stats">
+        <p>Total Events: {events.length}</p>
+        <p>Total Participants: {totalParticipants}</p>
+        <p>Average Participants: {averageParticipants.toFixed(1)}</p>
+      </div>
+
+      {/* SEARCH + SORT */}
+      <div className="controls">
+        <input
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="date">Sort by Date</option>
+          <option value="name">Sort by Name</option>
+          <option value="participants">Sort by Participants</option>
+        </select>
+      </div>
+
+      {/* LIST */}
+      <EventList
+        events={filteredEvents}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      {/* MODAL */}
+      {showForm && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <EventForm
+              onAdd={handleSave}
+              onCancel={() => {
+                setShowForm(false);
+                setEditingEvent(null);
+              }}
+              initialData={editingEvent}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
