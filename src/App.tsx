@@ -170,11 +170,23 @@ export default function App() {
 
   const [error, setError] = useState<string | null>(null);
 
+  // const [originalEvent, setOriginalEvent] = useState<Event | null>(null);
+
   // LOAD
   async function refresh() {
     const data = await planner.loadAllFromRepository();
     setEvents([...data]);
   }
+
+function handleRevert(event: any) {
+  console.log("REVERTING...");
+
+  event.discardChanges();
+
+  setEvents((prev) =>
+    prev.map((e) => (e.id === event.id ? event : e))
+  );
+}
 
   useEffect(() => {
     refresh();
@@ -214,10 +226,14 @@ export default function App() {
   }
 
   // EDIT
-  function handleEdit(event: Event) {
-    setEditingEvent(event);
-    setShowForm(true);
-  }
+function handleEdit(event: any) {
+  setEditingEvent(event);
+
+  // 🔥 use class method instead
+  event.saveOriginal();
+
+  setShowForm(true);
+}
 
   // CALCULATIONS (TASK 1 REQUIREMENT)
   const totalParticipants = events.reduce(
@@ -253,13 +269,17 @@ export default function App() {
   return (
     <div className="dashboard">
 
-      <div className="header">
-        <h1>📅 Event Dashboard</h1>
+<div className="header">
+  <h1>📅 Event Dashboard</h1>
 
-        <button onClick={() => setShowForm(true)}>
-          + Add Event
-        </button>
-      </div>
+  <div className="stats">
+    <p>Total Events: <strong>{events.length}</strong></p>
+  </div>
+
+  <button onClick={() => setShowForm(true)}>
+    + Add Event
+  </button>
+</div>
 
       {/* ERROR (FAILURE CASE UI) */}
       {error && (
@@ -298,6 +318,7 @@ export default function App() {
         events={filteredEvents}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onRevert={handleRevert}
       />
 
       {/* MODAL */}
