@@ -1,8 +1,9 @@
+import type { Event } from "../types/Event";
+
 type Props = {
-  event: any;
-  onEdit: (event: any) => void;
+  event: Event;
+  onEdit: (event: Event) => void;
   onDelete: (id: number) => void;
-  // onRevert: (event: any) => void;
 };
 
 export default function EventItem({
@@ -16,6 +17,7 @@ export default function EventItem({
       <p>Date: {event.date}</p>
       <p>Location: {event.location}</p>
       <p>Participants: {event.participants}</p>
+      <p>Level: {event.participants > 10 ? "High" : "Low"}</p>
 
       <div className="actions">
         <button onClick={() => onEdit(event)}>
