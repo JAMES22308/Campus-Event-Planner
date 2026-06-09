@@ -48,7 +48,7 @@ export default function EventForm({ onAdd, onCancel, initialData }: any) {
         </button>
 
         <button type="button" onClick={onCancel}>
-          Cancel
+          Revert
         </button>
       </div>
 

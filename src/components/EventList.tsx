@@ -1,6 +1,6 @@
 import EventItem from "./EventItem";
 
-export default function EventList({ events, onEdit, onDelete, onRevert }: any) {
+export default function EventList({ events, onEdit, onDelete }: any) {
   return (
     <div className="list">
       {events.length === 0 ? (
@@ -12,7 +12,6 @@ export default function EventList({ events, onEdit, onDelete, onRevert }: any) {
           event={event}
           onEdit={onEdit}
           onDelete={onDelete}
-          onRevert={onRevert}
         />
         ))
       )}

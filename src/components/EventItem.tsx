@@ -2,14 +2,13 @@ type Props = {
   event: any;
   onEdit: (event: any) => void;
   onDelete: (id: number) => void;
-  onRevert: (event: any) => void;
+  // onRevert: (event: any) => void;
 };
 
 export default function EventItem({
   event,
   onEdit,
   onDelete,
-  onRevert,
 }: Props) {
   return (
     <div className="event-card">
@@ -24,7 +23,7 @@ export default function EventItem({
         </button>
 
         {/* 🔥 REVERT BUTTON (KATABI NG EDIT) */}
-      <button
+      {/* <button
         onClick={() => {
           console.log("REVERT CLICKED");
           event.discardChanges(); // optional debug
@@ -32,7 +31,7 @@ export default function EventItem({
         }}
       >
         Revert
-      </button>
+      </button> */}
 
         <button onClick={() => onDelete(event.id)}>
           Delete

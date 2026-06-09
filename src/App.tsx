@@ -178,15 +178,15 @@ export default function App() {
     setEvents([...data]);
   }
 
-function handleRevert(event: any) {
-  console.log("REVERTING...");
+// function handleRevert(event: any) {
+//   console.log("REVERTING...");
 
-  event.discardChanges();
+//   event.discardChanges();
 
-  setEvents((prev) =>
-    prev.map((e) => (e.id === event.id ? event : e))
-  );
-}
+//   setEvents((prev) =>
+//     prev.map((e) => (e.id === event.id ? event : e))
+//   );
+// }
 
   useEffect(() => {
     refresh();
@@ -318,7 +318,6 @@ function handleEdit(event: any) {
         events={filteredEvents}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onRevert={handleRevert}
       />
 
       {/* MODAL */}
