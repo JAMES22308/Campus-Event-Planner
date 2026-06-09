@@ -10,6 +10,8 @@ import type { Event } from "./types/Event";
 
 import "./App.css";
 
+import OfflineBanner from "./components/OfflineBanner";
+
 
 
 const planner = new EventPlanner(new IndexedDBEventRepository());
@@ -25,6 +27,34 @@ export default function App() {
   // const [error, setError] = useState<string | null>(null);
 
   // const [originalEvent, setOriginalEvent] = useState<Event | null>(null);
+
+
+
+
+  //offline banner
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+
+  useEffect(() => {
+  function goOnline() {
+    setIsOffline(false);
+  }
+
+  function goOffline() {
+    setIsOffline(true);
+  }
+
+  window.addEventListener("online", goOnline);
+  window.addEventListener("offline", goOffline);
+
+  return () => {
+    window.removeEventListener("online", goOnline);
+    window.removeEventListener("offline", goOffline);
+  };
+}, []);
+
+
+
 
   // LOAD
   async function refresh() {
@@ -122,6 +152,8 @@ function handleEdit(event: Event) {
 
   return (
     <div className="dashboard">
+
+    {isOffline && <OfflineBanner />}
 
 <div className="header">
   <h1>📅 Event Dashboard</h1>
