@@ -73,19 +73,41 @@ async updateEvent(id, newData) {
 }
 
   // DELETE
+  // async removeEvent(id) {
+  //   const index = this.#events.findIndex((e) => e.id === id);
+
+  //   if (index === -1) throw new Error("Event not found");
+
+  //   const [removed] = this.#events.splice(index, 1);
+
+  //   if (this.repository) {
+  //     await this.repository.remove(id);
+  //   }
+
+  //   return removed;
+  // }
+
+
   async removeEvent(id) {
-    const index = this.#events.findIndex((e) => e.id === id);
+  // always sync with database first
+  const rawEvents = await this.repository.getAll();
 
-    if (index === -1) throw new Error("Event not found");
+  const exists = rawEvents.find(
+    (e) => String(e.id) === String(id)
+  );
 
-    const [removed] = this.#events.splice(index, 1);
-
-    if (this.repository) {
-      await this.repository.remove(id);
-    }
-
-    return removed;
+  if (!exists) {
+    throw new Error("Event not found");
   }
+
+  // delete from DB
+  await this.repository.remove(id);
+
+  // refresh memory after delete
+  await this.loadAllFromRepository();
+
+  return exists;
+}
 
   // LOAD FROM DB (🔥 CRITICAL FIX)
   async loadAllFromRepository() {
