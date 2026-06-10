@@ -193,11 +193,13 @@ function handleEdit(event: Event) {
 
       {/* SEARCH + SORT */}
       <div className="controls">
-        <input
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+<div className="search-box">
+  <input
+    placeholder="🔍 Search by event name or location..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+</div>
 
         <select
           value={sortBy}
