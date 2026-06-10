@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./EventForm.css";
 
 export default function EventForm({ onAdd, onCancel, initialData }: any) {
   const [name, setName] = useState("New Event");
@@ -54,42 +55,51 @@ export default function EventForm({ onAdd, onCancel, initialData }: any) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form">
-      <h2>{initialData ? "Edit Event" : "Add Event"}</h2>
+   <form onSubmit={handleSubmit} className="form">
+  <h2>{initialData ? "Edit Event" : "Add Event"}</h2>
 
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-      />
+  {/* NAME */}
+  <label>Event Name</label>
+  <input
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    placeholder="Enter event name"
+  />
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-      />
+  {/* DATE */}
+  <label>Date</label>
+  <input
+    type="date"
+    value={date}
+    onChange={(e) => setDate(e.target.value)}
+  />
 
-      <input
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        placeholder="Location"
-      />
+  {/* LOCATION */}
+  <label>Location</label>
+  <input
+    value={location}
+    onChange={(e) => setLocation(e.target.value)}
+    placeholder="Enter location"
+  />
 
-      <input
-        type="number"
-        value={participants}
-        onChange={(e) => setParticipants(Number(e.target.value))}
-      />
+  {/* PARTICIPANTS */}
+  <label>Participants</label>
+  <input
+    type="number"
+    value={participants}
+    onChange={(e) => setParticipants(Number(e.target.value))}
+  />
 
-      <div className="form-actions">
-        <button type="submit">
-          {initialData ? "Update" : "Save"}
-        </button>
+  {/* BUTTONS */}
+  <div className="form-actions">
+    <button type="submit">
+      {initialData ? "Update" : "Save"}
+    </button>
 
-        <button type="button" onClick={onCancel}>
-          Cancel
-        </button>
-      </div>
-    </form>
+    <button type="button" onClick={onCancel}>
+      Cancel
+    </button>
+  </div>
+</form>
   );
 }

@@ -1,4 +1,5 @@
 import type { Event } from "../types/Event";
+import "./EventItem.css";
 
 type Props = {
   event: Event;
@@ -12,35 +13,30 @@ export default function EventItem({
   onDelete,
 }: Props) {
   return (
-    <div className="event-card">
-      <h3>{event.name}</h3>
-      <p>Date: {event.date}</p>
-      <p>Location: {event.location}</p>
-      <p>Participants: {event.participants}</p>
-      <p>Level: {event.participants > 10 ? "High" : "Low"}</p>
+   <div className="event-card">
+  <div className="top-row">
+    <h3>📌 {event.name}</h3>
 
-      <div className="actions">
-        <button onClick={() => onEdit(event)}>
-          Edit
-        </button>
+    <span className={event.participants > 10 ? "badge high" : "badge low"}>
+      {event.participants > 10 ? "🔥 High" : "🟢 Low"}
+    </span>
+  </div>
 
-        {/* 🔥 REVERT BUTTON (KATABI NG EDIT) */}
-      {/* <button
-        onClick={() => {
-          console.log("REVERT CLICKED");
-          event.discardChanges(); // optional debug
-          onRevert(event);
-        }}
-      >
-        Revert
-      </button> */}
+  <div className="info-row">
+    <span>📅 {event.date}</span>
+    <span>📍 {event.location}</span>
+    <span>👥 {event.participants}</span>
+  </div>
 
-        <button onClick={() => onDelete(event.id)}>
-          Delete
-        </button>
+  <div className="actions">
+    <button className="edit" onClick={() => onEdit(event)}>
+      ✏️ Edit
+    </button>
 
-      
-      </div>
-    </div>
+    <button className="delete" onClick={() => onDelete(event.id)}>
+      🗑 Delete
+    </button>
+  </div>
+</div>
   );
 }

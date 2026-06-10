@@ -156,14 +156,13 @@ function handleEdit(event: Event) {
     {isOffline && <OfflineBanner />}
 
 <div className="header">
-  <h1>📅 Event Dashboard</h1>
-
-  <div className="stats">
-    <p>Total Events: <strong>{events.length}</strong></p>
+  <div className="header-left">
+    <h1>📅 Event Dashboard</h1>
+    <p>Manage your campus events efficiently</p>
   </div>
 
-  <button onClick={() => setShowForm(true)}>
-    + Add Event
+  <button className="primary-btn" onClick={() => setShowForm(true)}>
+    ➕ Add Event
   </button>
 </div>
 
@@ -175,11 +174,22 @@ function handleEdit(event: Event) {
       )} */}
 
       {/* CALCULATIONS DISPLAY (IMPORTANT FOR MARKS) */}
-      <div className="stats">
-        <p>Total Events: {events.length}</p>
-        <p>Total Participants: {totalParticipants}</p>
-        <p>Average Participants: {averageParticipants.toFixed(1)}</p>
-      </div>
+<div className="stats-grid">
+  <div className="stat-card">
+    <p className="label">📅 Total Events</p>
+    <h2>{events.length}</h2>
+  </div>
+
+  <div className="stat-card">
+    <p className="label">👥 Total Participants</p>
+    <h2>{totalParticipants}</h2>
+  </div>
+
+  <div className="stat-card">
+    <p className="label">📊 Average</p>
+    <h2>{averageParticipants.toFixed(1)}</h2>
+  </div>
+</div>
 
       {/* SEARCH + SORT */}
       <div className="controls">

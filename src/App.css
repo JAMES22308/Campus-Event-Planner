@@ -1,59 +1,122 @@
 .dashboard {
-  padding: 20px;
-  font-family: Arial;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  background: #16213e;
+  padding: 16px 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  margin-bottom: 16px;
 }
 
-button {
-  padding: 8px 12px;
-  cursor: pointer;
+/* LEFT SIDE */
+.header-left h1 {
+  margin: 0;
+  font-size: 20px;
+  color: white;
 }
 
+.header-left p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* BUTTON */
+
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* STATS */
+.stats {
+  margin-top: 16px;
+  display: flex;
+  gap: 20px;
+  background: var(--panel);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+}
+
+/* CONTROLS */
+.controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.controls input,
+.controls select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+/* LIST */
 .list {
   margin-top: 20px;
-}
-
-.card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  display: grid;
+  gap: 12px;
 }
 
 /* MODAL */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-
+  inset: 0;
+  background: rgba(0,0,0,0.6);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .modal {
-  background: white;
+  background: var(--panel);
   padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+  border-radius: var(--radius);
+  width: 400px;
 }
 
-.form input {
-  display: block;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: space-between;
+/* each card */
+.stat-card {
+  background: #16213e;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  text-align: left;
+  transition: 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card h2 {
+  margin: 6px 0 0;
+  font-size: 22px;
+  color: white;
+}
+
+.label {
+  font-size: 12px;
+  color: #94a3b8;
 }
